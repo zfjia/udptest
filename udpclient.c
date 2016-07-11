@@ -12,7 +12,16 @@
 #include <sys/socket.h>
 
 #define PORT 9009
-#define BUFLEN 2048
+int packet_print(const char * buf, int len){
+
+	int i;
+	for (i=0;i<len;i++){
+		printf("%02X-", buf[i]);
+	}
+	printf("\n");
+	return 0;
+}
+
 int udpsend(const char *host, int port,const char * buf, int len)
 {
         struct sockaddr_in myaddr, remaddr;
@@ -52,17 +61,22 @@ int udpsend(const char *host, int port,const char * buf, int len)
 
         /* now let's send the messages */
 
-        printf("Sending packet %d to %s port %d\n", i, server, port);
+        printf("Sending packet to %s port %d ----->\n", server, port);
+	packet_print(buf,len);
+	printf("<---------\n");
         if (sendto(fd, buf, len, 0, (struct sockaddr *)&remaddr, slen)==-1) {
             perror("sendto");
             exit(1);
         }
-#if 0
+#if 1
+	char recebuf[1024];
+	int BUFLEN=1024;
+	int recvlen ;
                 /* now receive an acknowledgement from the server */
-        recvlen = recvfrom(fd, buf, BUFLEN, 0, (struct sockaddr *)&remaddr, &slen);
+        recvlen = recvfrom(fd, recebuf, BUFLEN, 0, (struct sockaddr *)&remaddr, &slen);
         if (recvlen >= 0) {
-            buf[recvlen] = 0;/* expect a printable string - terminate it */
-            printf("received message: \"%s\"\n", buf);
+            recebuf[recvlen] = 0;/* expect a printable string - terminate it */
+            printf("received message: \"%s\"\n", recebuf);
                             
         }
 #endif            

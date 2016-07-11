@@ -11,6 +11,9 @@
 #include <sys/socket.h>
 #include <arpa/inet.h>
 
+#include "udpclient.h"
+#include "netlinkclient.h"
+
 #define PORT 9009
 #define BUFSIZE 8192
 
@@ -46,14 +49,19 @@ main(int argc, char **argv)
 
     /* now loop, receiving data and printing what we received */
     for (;;) {
+	memset(buf, 0, sizeof(buf));
         printf("waiting on port %d\n", PORT);
         recvlen = recvfrom(fd, buf, BUFSIZE, 0, (struct sockaddr *)&remaddr, &addrlen);
         printf("received %d bytes\n", recvlen);
         if (recvlen > 0) {
             buf[recvlen] = 0;
             printf("received message: \"%s\"\n", buf);
-          
+		packet_print(buf,recvlen);
+		send_kernel(buf,recvlen);
         }
+	memset(buf, 0, sizeof(buf));
+	sprintf(buf,"I got it! This is ACK!");
+	sendto(fd, buf, BUFSIZE, 0,(struct sockaddr *)&remaddr, addrlen);
                 
     }
     return 0;

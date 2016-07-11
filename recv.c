@@ -112,8 +112,8 @@ int PrintOut(char *buf, int buflen){
         printf("Recv: Payload Length=%d,buflen = %d\n", buflen, (int)strlen(buf));
 
         for (i=0;i<buflen;i++){
-            printf("%02X", buf[i]);
             if (i % 8 == 0)
-            printf("\n");
+            	printf("\n");
+            printf("%02X", buf[i]);
         }
 }

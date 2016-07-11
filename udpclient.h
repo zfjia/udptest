@@ -9,3 +9,4 @@
 #define _UDPCLIENT_H
 #endif
 int udpsend(const char *host, int port,const char * buf, int len);
+int packet_print(char *buf, int len);
